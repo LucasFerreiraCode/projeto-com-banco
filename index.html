@@ -16,15 +16,15 @@
             <input type="text" id="name" required>
 
             <label for="phone">Número de Telefone:</label>
-            <input type="text" id="phone" required>
+            <input type="text" id="phone" maxlength="15" placeholder="(XX) XXXXX-XXXX" />
 
-            <label for="bairro">Bairro:</label>
-            <input type="text" id="bairro" required>
+            <label for="email">E-mail:</label>
+            <input type="text" id="email" required>
 
             <button type="submit">Salvar</button>
         </form>
 
-        <h2>Lista de Contatos</h2>
+        <h2>Informações inseridas acima:</h2>
         <ul id="contact-list"></ul>
         <button id="export-btn">Exportar Dados</button>
     </div>
@@ -83,7 +83,7 @@
 
             contacts.forEach((contact) => {
                 const li = document.createElement("li");
-                li.textContent = `${contact.name} - ${contact.phone} - ${contact.bairro}`;
+                li.textContent = `${contact.name} - ${contact.phone} - ${contact.email}`;
 
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Excluir";
@@ -116,10 +116,10 @@
             event.preventDefault();
             const name = document.getElementById("name").value;
             const phone = document.getElementById("phone").value;
-            const bairro = document.getElementById("bairro").value;
+            const email = document.getElementById("email").value;
 
-            if (name && phone && bairro) {
-                await addContact({ name, phone, bairro });
+            if (name && phone && email) {
+                await addContact({ name, phone, email });
                 document.getElementById("contact-form").reset();
                 updateContactList();
             }
@@ -130,6 +130,23 @@
 
         // Carregar contatos ao inicializar a página
         document.addEventListener("DOMContentLoaded", updateContactList);
+
+        const telefoneInput = document.getElementById("phone");
+
+        telefoneInput.addEventListener("input", (e) => {
+            let input = e.target.value;
+            // Remove todos os caracteres que não sejam números
+            input = input.replace(/\D/g, "");
+
+            // Aplica a formatação (XX) XXXXX-XXXX
+            if (input.length <= 10) {
+                input = input.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+            } else {
+                input = input.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+            }
+
+            e.target.value = input;
+        });
     </script>
 </body>
 
